@@ -192,7 +192,7 @@ WITH RankedMovies AS (
   WHERE d.Year = 2018
   GROUP BY c.Gender, m.Title
 )
-SELECT * FROM RankedMovies 
+SELECT * FROM RankedMovies
 WHERE RankByGender <= 10
 ORDER BY Gender, RankByGender;
 
@@ -209,7 +209,7 @@ WITH CinemaSales AS (
   WHERE d.Year BETWEEN 2014 AND 2018
   GROUP BY cin.City, cin.CinemaName
 )
-SELECT * FROM CinemaSales 
+SELECT * FROM CinemaSales
 WHERE RankInCity <= 5
 ORDER BY City, RankInCity;
 

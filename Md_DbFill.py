@@ -197,7 +197,7 @@ def populate_payment_dim(conn, num_payments=5):
         cur.close()
         return
     payment_methods = ['Credit Card', 'Debit Card', 'Cash', 'Online Payment', 'Mobile Payment']
-    browsers = ['Chrome', 'Firefox', 'Safari', 'Edge', 'Opera', None]  
+    browsers = ['Chrome', 'Firefox', 'Safari', 'Edge', 'Opera', None]
     device_systems = ['Windows', 'macOS', 'Linux', 'Android', 'iOS']
     insert_query = """
         INSERT INTO PaymentDim (PaymentMethod, BrowserName, DeviceSystem, TransactionType)
@@ -233,14 +233,14 @@ def compute_screening_period(screening_time_str):
 
 def populate_fact_table(conn, num_rows=1000000):
     cur = conn.cursor()
-    
+
     date_keys = fetch_keys(cur, "SELECT DateKey FROM DateDim")
     movie_keys = fetch_keys(cur, "SELECT MovieKey FROM MovieDim")
     cinema_keys = fetch_keys(cur, "SELECT CinemaKey FROM CinemaDim")
     customer_keys = fetch_keys(cur, "SELECT CustomerKey FROM CustomerDim")
     promotion_keys = fetch_keys(cur, "SELECT PromotionKey FROM PromotionDim")
     payment_keys = fetch_keys(cur, "SELECT PaymentKey FROM PaymentDim")
-    
+
     if not date_keys:
         raise Exception("DateDim is empty!")
     if not movie_keys:
@@ -251,16 +251,16 @@ def populate_fact_table(conn, num_rows=1000000):
         raise Exception("CustomerDim is empty!")
     if not payment_keys:
         raise Exception("PaymentDim is empty!")
-    
+
     insert_query = """
-        INSERT INTO FactTicketSales 
+        INSERT INTO FactTicketSales
         (DateKey, MovieKey, CinemaKey, CustomerKey, PromotionKey, PaymentKey,
          TicketQuantity, TicketPrice, SeatRow, SeatNumber, DiscountAmount, ScreeningTime, ScreeningPeriod)
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
     """
-    
+
     possible_hours = list(range(10, 24)) + [0]
-    
+
     for i in range(num_rows):
         date_key = random.choice(date_keys)
         movie_key = random.choice(movie_keys)
@@ -278,10 +278,10 @@ def populate_fact_table(conn, num_rows=1000000):
         second = random.randint(0, 59)
         screening_time = f"{hour:02d}:{minute:02d}:{second:02d}"
         screening_period = compute_screening_period(screening_time)
-        
+
         cur.execute(insert_query, (date_key, movie_key, cinema_key, customer_key, promotion_key, payment_key,
                                      ticket_quantity, ticket_price, seat_row, seat_number, discount_amount, screening_time, screening_period))
-        
+
         if (i + 1) % 10000 == 0:
             conn.commit()
             print(f"{i+1} fact rows inserted")
@@ -294,7 +294,7 @@ def main():
     try:
         conn = get_connection()
         print("Connected to database.")
-        
+
         # Populate dimension tables
         populate_date_dim(conn)
         populate_movie_dim(conn)
@@ -303,10 +303,10 @@ def main():
         populate_promotion_dim(conn)
         populate_payment_dim(conn)
         populate_movie_cast_dim(conn, num_casts_per_movie=3)
-        
+
         # Populate fact table
         populate_fact_table(conn, num_rows=1000000)
-        
+
     except Exception as e:
         print("Error:", e)
     finally:

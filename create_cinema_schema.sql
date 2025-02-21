@@ -9,7 +9,7 @@ CREATE TABLE DateDim (
     MonthName     VARCHAR(20),
     Quarter       INT,
     Year          INT NOT NULL,
-    WeekNumber    INT,         
+    WeekNumber    INT,
     DayOfWeek     VARCHAR(20)
 );
 CREATE INDEX idx_datedim_fulldate ON DateDim (FullDate);
@@ -40,7 +40,7 @@ CREATE TABLE CinemaDim (
     CinemaName    VARCHAR(100),
     Address       VARCHAR(200),
     City          VARCHAR(100),
-    State         VARCHAR(100),  
+    State         VARCHAR(100),
     Country       VARCHAR(100),
     HallNumber    INT,
     HallCapacity  INT
@@ -54,7 +54,7 @@ CREATE TABLE CustomerDim (
     AgeGroup             VARCHAR(20),  -- Derived attribute stored during insertion
     City                 VARCHAR(100),
     OtherCustomerAttrib  VARCHAR(50),
-    BirthDate            DATE         
+    BirthDate            DATE
 );
 CREATE INDEX idx_customerdim_age_gender ON CustomerDim (AgeGroup, Gender);
 
@@ -75,7 +75,7 @@ CREATE TABLE PaymentDim (
     PaymentMethod   VARCHAR(50),
     BrowserName     VARCHAR(50),  -- If not null, indicates an online transaction
     DeviceSystem    VARCHAR(50),
-    TransactionType VARCHAR(20)  
+    TransactionType VARCHAR(20)
 );
 
 -- 7. Fact Table: FactTicketSales
@@ -93,8 +93,8 @@ CREATE TABLE FactTicketSales (
     SeatNumber       VARCHAR(5),
     DiscountAmount   NUMERIC(6,2),
     ScreeningTime    TIME,  -- Original screening time
-    ScreeningPeriod  VARCHAR(20), 
-    
+    ScreeningPeriod  VARCHAR(20),
+
     -- Foreign Keys
     CONSTRAINT fk_fact_date FOREIGN KEY (DateKey) REFERENCES DateDim(DateKey) ON DELETE RESTRICT,
     CONSTRAINT fk_fact_movie FOREIGN KEY (MovieKey) REFERENCES MovieDim(MovieKey) ON DELETE RESTRICT,
